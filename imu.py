@@ -21,6 +21,10 @@
 
 class IMU:
     def __init__(self, port, address):
+        """
+
+        :rtype : object
+        """
         self.serial_port = port
         self.address = address
 

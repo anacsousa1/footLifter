@@ -18,7 +18,6 @@ import math
 
 # Greetings
 print "Hello!"
-ang = [0, 0, 0]
 
 # Ports and addresses
 portIMU = 'COM4'        # in windows, verify "Manage Devices"
@@ -35,6 +34,16 @@ device1 = imu.IMU(serialPortIMU, addressIMU)
 # Getting the info
 print '\n...Calibrating.'
 
+calibrationError = 10
+while calibrationError > 0.1:
+    device1.setEulerToYXZ()
+    device1.calibrate()
+    device1.tare()
+    cal = device1.getEulerAngles()
+    cal = cal.split(',', 6)
+    calibrationError = float(cal[3]) + float(cal[4]) + float(cal[5])
+print "...Done it!"
+
 # Wait until the user press the 'Start' button
 print '...Whenever you\'re ready, press button 1 (the left one)!'
 while not (device1.checkButtons() == 1):
@@ -46,10 +55,12 @@ while not (device1.checkButtons() == 2):
     angles = angles.split(',', 6)       # convert to list
 
     if len(angles) == 6:                # if we connect correctly with the device
-        ang[0] = math.degrees(float(angles[3]))
-        ang[1] = math.degrees(float(angles[4]))
-        ang[2] = math.degrees(float(angles[5]))
-        print str(ang[0]) + ' ' + str(ang[1]) + ' ' + str(ang[2])
+        pitch = float(angles[4])
+        if pitch >= 0:
+            pitch = math.degrees(pitch)
+        else:
+            pitch = 360 + math.degrees(pitch)
+        print str(pitch)
 
     time.sleep(0.5)
 
