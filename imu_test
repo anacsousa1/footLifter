@@ -1,0 +1,59 @@
+# ######################################################################################################################
+# ## imu_test.py
+# ## Description: testing the IMU
+# ## Library needed: imu.py, stimulator.py
+# ## Python interpreter: Anaconda 2.2.0 (python 2.7)
+# ## Author: Ana Carolina Cardoso de Sousa
+# ## Email: anacsousa1@gmail.com
+# ## Created: May 29th 2015
+# ######################################################################################################################
+
+__author__ = 'AnaSousa'
+
+# Importing...
+import serial
+import imu
+import time
+import math
+
+# Greetings
+print "Hello!"
+ang = [0, 0, 0]
+
+# Ports and addresses
+portIMU = 'COM4'        # in windows, verify "Manage Devices"
+addressIMU = 1          # the device must have a stick informing it
+
+# Open ports
+print "\n...Trying to connect IMU" + str(addressIMU) + " to port " + portIMU + "."
+serialPortIMU = serial.Serial(portIMU, timeout=1, writeTimeout=1, baudrate=115200)
+print "...Done it!"
+
+# Construct objects
+device1 = imu.IMU(serialPortIMU, addressIMU)
+
+# Getting the info
+print '\n...Calibrating.'
+
+# Wait until the user press the 'Start' button
+print '...Whenever you\'re ready, press button 1 (the left one)!'
+while not (device1.checkButtons() == 1):
+    pass
+
+# Do it n times
+while not (device1.checkButtons() == 2):
+    angles = device1.getEulerAngles()   # get angles
+    angles = angles.split(',', 6)       # convert to list
+
+    if len(angles) == 6:                # if we connect correctly with the device
+        ang[0] = math.degrees(float(angles[3]))
+        ang[1] = math.degrees(float(angles[4]))
+        ang[2] = math.degrees(float(angles[5]))
+        print str(ang[0]) + ' ' + str(ang[1]) + ' ' + str(ang[2])
+
+    time.sleep(0.5)
+
+# Bye
+serialPortIMU.close()                   # close port
+
+print 'Bye, bye.'

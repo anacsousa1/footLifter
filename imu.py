@@ -1,132 +1,146 @@
-#IMU functions
-#import serial
+# ######################################################################################################################
+# ## imu.py
+# ## Description: library for the IMU
+# ## Python interpreter: Anaconda 2.2.0 (python 2.7)
+# ## Author: Lucas Fonseca
+# ## Email: lucasfonseca27@gmail.com
+# ## Updated: May 29th 2015
+# ######################################################################################################################
+
+# ######################################################################################################################
+# ## TIPS FOR IMU
+# ##         - Install the YEI 3 space sensor with the YEI 3-SPACE SENSOR SOFTWARE SUITE.
+# ##         - The software will install the drivers, inform you the IMU port and the device address.
+# ##         - For win8, install the driver without the signature (in portuguese):
+# ##                    http://www.hardware.com.br/comunidade/instalar-driver/1358528/
+# ## TIPS FOR SERIAL
+# ##        - For installing the serial package, go to (in english):
+# ##                    https://pypi.python.org/pypi/pyserial
+# ######################################################################################################################
+
 
 class IMU:
-    def __init__(self, port, address):     
+    def __init__(self, port, address):
         self.serial_port = port
         self.address = address
 
-########################################
-# Calibration
-########################################
-        
+    # #######################################
+    # Calibration
+    # #######################################
+
     def calibrate(self):
         msg = ">" + str(self.address) + ",165\n".encode()
-        try:                
+        try:
             if self.serial_port is not None:
-                self.serial_port.write(msg) # e escreve na porta
-                dados = readData(self.serial_port)
+                self.serial_port.write(msg)     # writes at the port
+                dados = read_data(self.serial_port)
                 return dados
-                      
+
             else:
-                return 0              
+                return 0
         except ValueError:
             return 0
-            
-            
-########################################
-# Set euler to YXZ
-########################################
-        
+
+
+    ########################################
+    # Set euler to YXZ
+    ########################################
+
     def setEulerToYXZ(self):
         msg = ">" + str(self.address) + ",16,1\n".encode()
-        try:                
+        try:
             if self.serial_port is not None:
-                self.serial_port.write(msg) # e escreve na porta
-                dados = readData(self.serial_port)
+                self.serial_port.write(msg)     # writes at the port
+                dados = read_data(self.serial_port)
                 return dados
             else:
-                return 0               
+                return 0
         except ValueError:
             return 0
-            
-            
-########################################
-# Tare with current orientation
-########################################
-        
+
+
+    ########################################
+    # Tare with current orientation
+    ########################################
+
     def tare(self):
         msg = ">" + str(self.address) + ",96\n".encode()
-        try:                
+        try:
             if self.serial_port is not None:
-                self.serial_port.write(msg) # e escreve na porta
-                dados = readData(self.serial_port)
+                self.serial_port.write(msg)     # writes at the port
+                dados = read_data(self.serial_port)
                 return dados
             else:
-                return 0                
+                return 0
         except ValueError:
             return 0
 
-
-
-
-########################################
-# Check Buttons
-########################################
+    ########################################
+    # Check Buttons
+    ########################################
 
     def checkButtons(self):
-        
-        try:  
-            if self.serialPort is not None:
-                self.serialPort.write((">" + str(self.address) + ",250\n".encode())) #Get button state) # e escreve na porta
-                dados = readData(self.serial_port)
+
+        try:
+            if self.serial_port is not None:
+                # Get button state) and writes at the port
+                self.serial_port.write((">" + str(self.address) + ",250\n".encode()))
+                dados = read_data(self.serial_port)
                 botao = dados.split(",")
-                if len(botao) == 4:               
+                if len(botao) == 4:
                     botao = botao[3]
-                    if (int(botao) == 1):                                    
+                    if int(botao) == 1:
                         return 1
-                    elif (int(botao) == 2):                  
+                    elif int(botao) == 2:
                         return 2
                     else:
                         return 0
-                  
-        except ValueError:            
+
+        except ValueError:
             return 'Error'
 
-
-
-########################################
-# Get Euler Angles
-########################################
+    ########################################
+    # Get Euler Angles
+    ########################################
 
     def getEulerAngles(self):
-        msg = ">" + str(self.address) + ",1\n".encode()        
-        try:                
+        msg = ">" + str(self.address) + ",1\n".encode()
+        try:
             if self.serial_port is not None:
-                self.serial_port.write(msg) # e escreve na porta
-                dados = readData(self.serial_port)
-                return dados            
+                self.serial_port.write(msg)     # writes at the port
+                dados = read_data(self.serial_port)
+                return dados
             else:
-                return 'Port error'               
+                return 'Port error'
         except ValueError:
             return 'Error'
-            
-########################################
-# Get Gyro Data
-########################################
+
+    ########################################
+    # Get Gyro Data
+    ########################################
 
     def getGyroData(self):
-        msg = ">" + str(self.address) + ",33\n".encode()        
-        try:                
+        msg = ">" + str(self.address) + ",33\n".encode()
+        try:
             if self.serial_port is not None:
-                self.serial_port.write(msg) # e escreve na porta
-                dados = readData(self.serial_port)
-                return dados            
+                self.serial_port.write(msg)     # writes at the port
+                dados = read_data(self.serial_port)
+                return dados
             else:
-                return 'Port error'               
+                return 'Port error'
         except ValueError:
             return 'Error'
-            
-            
-########################################
-# Single Command
-########################################
-            
+
+
+    ########################################
+    # Single Command
+    ########################################
+
     def singleCommand(self, command):
-        try:    
+        try:
             if self.serial_port is not None:
-                self.serial_port.write(">" + str(self.address) + "," + command + "\n") # e escreve na porta
-                dados = readData(self.serial_port)
+                self.serial_port.write(">" + str(self.address) + "," + command + "\n")     # writes at the port
+                dados = read_data(self.serial_port)
                 dados = dados.split(",")
                 if int(dados[0]) == 0:
                     return dados
@@ -134,19 +148,18 @@ class IMU:
                     return "No answer"
             else:
                 return 'Port error'
-            
+
         except ValueError:
             return 'Error'
-        return dados
-        
-def readData(port):
+
+
+def read_data(port):
     dados = ''
-    data = ''
     i = 1
-    while dados == "":            
+    while dados == "":
         port.flush()
-        data = port.read(port.inWaiting()) # le da porta bytearray
-        dados = data.decode()  # transforma bytearray em string
+        data = port.read(port.inWaiting())          # reads from bytearray
+        dados = data.decode()                       # converts bytearray in string
         i += 1
         if i > 10000:
             dados = 'No answer'
