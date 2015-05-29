@@ -66,5 +66,4 @@ while not (device1.checkButtons() == 2):
 
 # Bye
 serialPortIMU.close()                   # close port
-
 print 'Bye, bye.'
