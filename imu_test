@@ -1,6 +1,7 @@
 # ######################################################################################################################
 # ## imu_test.py
 # ## Description: testing the IMU
+# ##                - We test the connection and print the pitch angle.
 # ## Library needed: imu.py, stimulator.py
 # ## Python interpreter: Anaconda 2.2.0 (python 2.7)
 # ## Author: Ana Carolina Cardoso de Sousa
@@ -16,49 +17,55 @@ __authors__ = [
 # Importing...
 import time
 import math
-
 import serial
-
 import imu
-
+import sys
 
 # Greetings
-print "Hello!\n"
+print "Welcome to ours IMU tester, let\'s get this started?\n"
 
 # Ports and addresses
 portIMU = 'COM4'        # in windows, verify "Manage Devices"
-addressIMU = 0          # the device must have a stick informing it
+addressIMU = 1          # the device must have a stick informing it
 
 # Open ports
-print "...Trying to connect IMU" + str(addressIMU) + " to port " + portIMU + "."
-serialPortIMU = serial.Serial(portIMU, timeout=1, writeTimeout=1, baudrate=115200)
+print '\tWe are trying to connect to the IMU (address ' + str(addressIMU) + ') to port ' + portIMU + '.'
+
+try:
+    serialPortIMU = serial.Serial(portIMU, timeout=1, writeTimeout=1, baudrate=115200)
+except serial.SerialException:
+    print '\t\tNo Hardware Found in ' + portIMU + '... :(\n \t\tExiting now. \n'
+    sys.exit(0)
 
 if not serialPortIMU.isOpen():  # verify if it is already open
     serialPortIMU.open()
-print "...Done it!\n"
 
-# Construct objects
-device1 = imu.IMU(serialPortIMU, addressIMU)
+device1 = imu.IMU(serialPortIMU, addressIMU)    # Construct object
 
-# Getting the info
-print '\n...Calibrating.'
+testing = device1.getEulerAngles()              # Get some info
+testing = testing.split(',', 6)                 # Convert to list
 
-calibrationError = 10
-while calibrationError > 0.1:
-    device1.setEulerToYXZ()
-    device1.calibrate()
-    device1.tare()
-    cal = device1.getEulerAngles()
-    cal = cal.split(',', 6)
-    calibrationError = float(cal[3]) + float(cal[4]) + float(cal[5])
-print "...Done it!\n"
+if len(testing) == 2:   # testing connection
+    print '\t\tUnable to connect to the IMU... :(\n \t\tExiting now. \n'
+    sys.exit(1)
+
+# Calibrating
+print '\t\tWe are connected! Now, we are going to calibrate the IMU. Keep it still!\n'
+
+device1.calibrate()
+device1.tare()
+
+print "\t\t\tIMU Calibrated!\n"
 
 # Wait until the user press the 'Start' button
-print '...Whenever you\'re ready, press button 1 (the left one)!'
+print '\n\t\tWhenever you\'re ready, press button 1 (the left one)!'
 while not (device1.checkButtons() == 1):
     pass
 
-# Do it n times
+# Do it while 'Stop' button not pressed
+dt = 0.5
+print '\nPrinting pitch angle (sample time ' + str(dt) + ' seconds).'
+
 while not (device1.checkButtons() == 2):
     angles = device1.getEulerAngles()   # get angles
     angles = angles.split(',', 6)       # convert to list
@@ -69,11 +76,10 @@ while not (device1.checkButtons() == 2):
             pitch = math.degrees(pitch)
         else:
             pitch = 360 + math.degrees(pitch)
-        print str(angles)
-        # print str(pitch)
+        print str(pitch)
 
-    time.sleep(0.5)
+    time.sleep(dt)
 
 # Bye
 serialPortIMU.close()                   # close port
-print 'Bye, bye.'
+print 'Have a nice day!'
