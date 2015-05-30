@@ -17,16 +17,19 @@ import time
 import math
 
 # Greetings
-print "Hello!"
+print "Hello!\n"
 
 # Ports and addresses
 portIMU = 'COM4'        # in windows, verify "Manage Devices"
 addressIMU = 1          # the device must have a stick informing it
 
 # Open ports
-print "\n...Trying to connect IMU" + str(addressIMU) + " to port " + portIMU + "."
+print "...Trying to connect IMU" + str(addressIMU) + " to port " + portIMU + "."
 serialPortIMU = serial.Serial(portIMU, timeout=1, writeTimeout=1, baudrate=115200)
-print "...Done it!"
+
+if not serialPortIMU.isOpen(): #verify if it is already open
+    serialPortIMU.open()
+print "...Done it!\n"
 
 # Construct objects
 device1 = imu.IMU(serialPortIMU, addressIMU)
@@ -42,7 +45,7 @@ while calibrationError > 0.1:
     cal = device1.getEulerAngles()
     cal = cal.split(',', 6)
     calibrationError = float(cal[3]) + float(cal[4]) + float(cal[5])
-print "...Done it!"
+print "...Done it!\n"
 
 # Wait until the user press the 'Start' button
 print '...Whenever you\'re ready, press button 1 (the left one)!'
