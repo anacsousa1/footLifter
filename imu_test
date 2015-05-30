@@ -80,6 +80,6 @@ while not (device1.checkButtons() == 2):
 
     time.sleep(dt)
 
-# Bye
+# Bye bye
 serialPortIMU.close()                   # close port
 print 'Have a nice day!'
