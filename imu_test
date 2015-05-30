@@ -14,17 +14,20 @@ __authors__ = [
 
 
 # Importing...
-import serial
-import imu
 import time
 import math
+
+import serial
+
+import imu
+
 
 # Greetings
 print "Hello!\n"
 
 # Ports and addresses
 portIMU = 'COM4'        # in windows, verify "Manage Devices"
-addressIMU = 1          # the device must have a stick informing it
+addressIMU = 0          # the device must have a stick informing it
 
 # Open ports
 print "...Trying to connect IMU" + str(addressIMU) + " to port " + portIMU + "."
@@ -66,7 +69,8 @@ while not (device1.checkButtons() == 2):
             pitch = math.degrees(pitch)
         else:
             pitch = 360 + math.degrees(pitch)
-        print str(pitch)
+        print str(angles)
+        # print str(pitch)
 
     time.sleep(0.5)
 

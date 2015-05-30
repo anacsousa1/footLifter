@@ -18,6 +18,10 @@
 # ##                    https://pypi.python.org/pypi/pyserial
 # ######################################################################################################################
 
+__authors__ = [
+    '"Lucas Fonseca" <lucasfonseca27@gmail.com>',
+]
+
 
 class IMU:
     def __init__(self, port, address):
@@ -156,6 +160,10 @@ class IMU:
         except ValueError:
             return 'Error'
 
+
+# #######################################
+# Read data
+# #######################################
 
 def read_data(port):
     dados = ''
