@@ -8,7 +8,10 @@
 # ## Created: May 29th 2015
 # ######################################################################################################################
 
-__author__ = 'Ana'
+__authors__ = [
+    "\"Ana de Sousa\" <anacsousa1@gmail.com>",
+]
+
 
 # Importing...
 import serial
@@ -27,7 +30,7 @@ addressIMU = 1          # the device must have a stick informing it
 print "...Trying to connect IMU" + str(addressIMU) + " to port " + portIMU + "."
 serialPortIMU = serial.Serial(portIMU, timeout=1, writeTimeout=1, baudrate=115200)
 
-if not serialPortIMU.isOpen(): #verify if it is already open
+if not serialPortIMU.isOpen():  # verify if it is already open
     serialPortIMU.open()
 print "...Done it!\n"
 
