@@ -2,7 +2,7 @@
 # ## imu_test.py
 # ## Description: testing the IMU
 # ##                - We test the connection and print the pitch angle.
-# ## Library needed: imu.py, stimulator.py
+# ## Library needed: imu, time, math, serial, sys libraries
 # ## Python interpreter: Anaconda 2.2.0 (python 2.7)
 # ## Author: Ana Carolina Cardoso de Sousa
 # ## Email: anacsousa1@gmail.com
