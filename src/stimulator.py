@@ -1,14 +1,24 @@
 # ######################################################################################################################
 # ## stimulator.py
 # ## Description: library for the stimulator
+# ## Library needed: time library
 # ## Python interpreter: Anaconda 2.2.0 (python 2.7)
 # ## Author: Lucas Fonseca
 # ## Email: lucasfonseca27@gmail.com
 # ## Updated: Jun 03rd 2015
 # ######################################################################################################################
 
+# ######################################################################################################################
+# ## TIPS FOR STIMULATOR
+# ##         - First test it with an oscilloscope!
+# ## TIPS FOR SERIAL
+# ##        - For installing the serial package, go to (in english):
+# ##                    https://pypi.python.org/pypi/pyserial
+# ######################################################################################################################
+
 __authors__ = [
     '"Lucas Fonseca" <lucasfonseca27@gmail.com>',
+    "\"Ana de Sousa\" <anacsousa1@gmail.com>",
 ]
 
 
@@ -152,8 +162,7 @@ class Stimulator:
             stop_1 = 192
             stop = bytearray([stop_1])
             i = 1
-            self.serial_port.write(stop)  # e escreve na porta
-            data = ""
+            self.serial_port.write(stop)  # writes at the port
             dados = ""
 
             while dados == "":
