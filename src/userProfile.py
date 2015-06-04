@@ -24,6 +24,7 @@ def phase(ang):
         return 1
     return
 
+
 ####################################
 ####################################
 def muscle(phase_):     # muscle
