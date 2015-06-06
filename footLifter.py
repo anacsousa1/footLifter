@@ -14,8 +14,8 @@ __authors__ = [
 
 
 # Importing...
-# import time
-# import math
+import time
+import math
 import userProfile
 import imu
 import serial
@@ -49,7 +49,7 @@ print '\t\tWe are connected! Now, we are going to initialize the stimulator.!\n'
 # Initialize stimulator
 freq = 50
 current = [8]
-pulse_width = [500]
+pulse_width = [0]
 channels = 1
 print "\tStandard parameters: " + str(freq) + "Hz " + str(current) + "mA " + str(pulse_width) + "us."
 
@@ -83,31 +83,49 @@ if len(testing) == 2:   # testing connection
 # Calibrating
 print '\t\tWe are connected! Now, we are going to calibrate the IMU. Keep it still!\n'
 
+
+time.sleep(1)      # wait 1 second
+
 device1.calibrate()
 device1.tare()
 
-print "\t\t\tIMU Calibrated!\n"
+print "\t\tIMU Calibrated!"
 
 # ########################### FOOT LIFTER
 
 # First electrical stimulator signal update
 stim.update(channels, pulse_width, current)
 
-# Loop to change the pulse_width
+# Do it while 'Stop' button not pressed
+dt = 0.5
+print '\n\tPrinting pitch angle (sample time ' + str(dt) + ' seconds).'
+while not (device1.checkButtons() == 2):
+    angles = device1.getEulerAngles()   # get angles
+    angles = angles.split(',', 6)       # convert to list
 
-exit_key = 'esc'
-msg = "\n\tWrite a different width pulse (range between 100 and 500) like this [p]:\n\t(Write " + exit_key + " to exit)\n\t\t>>"
+    if len(angles) == 6:                # if we connect correctly with the device
+        pitch = float(angles[4])
+        if pitch >= 0:
+            pitch = math.degrees(pitch)
+        else:
+            pitch = 360 + math.degrees(pitch)
+        print str(pitch)
 
-key_input = raw_input(msg)      # reads the keyboard
+    phase = userProfile.phase(pitch)
+    pulse_width_new = userProfile.muscle(phase)
 
-while key_input != exit_key:
-    pulse_width[0] = int(key_input)                 # change pulse_width variable
-    stim.update(channels, pulse_width, current)     # update the stimulator signal
-    key_input = raw_input(msg)                      # reads the keyboard
+    if not (pulse_width_new == pulse_width[0]):
+        pulse_width[0] = pulse_width_new                 # change pulse_width variable
+        stim.update(channels, pulse_width, current)     # update the stimulator signal
+        print "\tChange the pulse_width to " + str(pulse_width[0]) + "Hz."
 
+    time.sleep(dt)      # wait dt seconds
+
+# ########################### BYEBYE
 # Stop the stimulator
 stim.stop()
 
 # Bye bye
-serialPortStimulator.close()                   # close port
-print 'Have a nice day!'
+serialPortIMU.close()                          # close IMU port
+serialPortStimulator.close()                   # close Stimulator port
+print '\nHave a nice day!'
