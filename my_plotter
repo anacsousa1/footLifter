@@ -59,20 +59,28 @@ print "\t\t\tIMU Calibrated!\n"
 
 # First...
 plt.close('all')
-dt = 0.5  # each dt seconds
-T = 10    # for T seconds
+dt = 0.1  # each dt seconds
+T = 2    #
 
 # ##############################################################################
 # ## Get data
 time_ = []
-angles = []
-N = T * dt  # number of samples
+x = []
+v = []
+N = T / dt  # number of samples
 
 print '\n\t\tWhenever you\'re ready, press button 1 (the left one)!'  # Wait until the user press the 'Start'
 while not (device1.checkButtons() == 1):
     pass
 
-for i in range(0, int(N)):
+print
+
+i = 0
+pitch = 90
+pitch_old = 90
+print 'reading...'
+
+while not (device1.checkButtons() == 2):
 
     angles = device1.getEulerAngles()   # get angles
     angles = angles.split(',', 6)       # convert to list
@@ -80,37 +88,29 @@ for i in range(0, int(N)):
     if len(angles) == 6:                # if we connect correctly with the device
         pitch = float(angles[4])
         if pitch >= 0:
-            pitch = math.degrees(pitch)
+            pitch = 90 + math.degrees(pitch)
         else:
-            pitch = 360 + math.degrees(pitch)
-        print str(pitch)
+            pitch = 90 + math.degrees(pitch)
 
-    angles.append(pitch)
+    v.append((pitch - pitch_old) / dt)
+    x.append(pitch)
     time_.append(i * dt)
-    print i * dt
     time.sleep(dt)
+    pitch_old = pitch
+    i += 1
+
 # ##############################################################################
 
 # Plot Pitch angle
-print "Plot pitch angle"
-plt.figure(1)
-plt.subplot(211)
-y = [time_ * 3 for time_ in time_]
-print y
-print time_
-plt.plot(time_, y)
-plt.xlabel('Time (seg)')
-plt.ylabel('Pitch Angle (deg)')
+# print "Plot pitch angle"
+# plt.figure(1)
+# plt.subplot(211)
+# y = [time_ * 3 for time_ in time_]
+# print x
+# print time_
+# plt.plot(time_)
+#plt.xlabel('Time (seg)')
+#plt.ylabel('Pitch Angle (deg)')
 
-sio.savemat('data.mat', {'y': y})
-
-# Plot Pitch velocity
-print "Plot pitch velocity"
-plt.subplot(212)
-y = [time_ * 3 for time_ in time_]
-print y
-print time_
-plt.plot(time_, y)
-plt.xlabel('Time (seg)')
-plt.ylabel('Pitch Velocity (deg)')
-plt.show()
+sio.savemat('x.mat', {'x': x})
+sio.savemat('v.mat', {'v': v})
