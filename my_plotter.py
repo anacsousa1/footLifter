@@ -1,7 +1,7 @@
 # ######################################################################################################################
 # ## my_plotter.py
 # ## Description: plot IMU data
-# ## Library needed: matplotlib.pyplot, scipy.io, imu, time, math, serial, sys libraries
+# ## Library needed: matplotlib.pyplot, matplotlib.animation, scipy.io, imu, time, math, serial, sys libraries
 # ## Python interpreter: Anaconda 2.2.0 (python 2.7)
 # ## Author: Ana Carolina Cardoso de Sousa
 # ## Email: anacsousa1@gmail.com
@@ -26,7 +26,7 @@ import scipy.io as sio
 # ##############################################################################
 # Ports and addresses
 portIMU = 'COM4'        # in windows, verify "Manage Devices"
-addressIMU = 0          # the device must have a stick informing it
+addressIMU = 1          # the device must have a stick informing it
 
 # Open ports
 print '\tWe are trying to connect to the IMU (address ' + str(addressIMU) + ') to port ' + portIMU + '.'
@@ -73,7 +73,9 @@ print '\n\t\tWhenever you\'re ready, press button 1 (the left one)!'  # Wait unt
 while not (device1.checkButtons() == 1):
     pass
 
-print
+plt.figure(1)
+plt.ion()
+plt.show()
 
 i = 0
 pitch = 90
@@ -97,20 +99,41 @@ while not (device1.checkButtons() == 2):
     time_.append(i * dt)
     time.sleep(dt)
     pitch_old = pitch
+
+    plt.subplot(211)
+    plt.scatter(time_, x, color='blue', marker=u'.')
+
+    plt.subplot(212)
+    plt.scatter(time_, v, color='red', marker=u'.')
+    plt.draw()
+
     i += 1
 
 # ##############################################################################
 
-# Plot Pitch angle
-# print "Plot pitch angle"
-# plt.figure(1)
-# plt.subplot(211)
-# y = [time_ * 3 for time_ in time_]
-# print x
-# print time_
-# plt.plot(time_)
-#plt.xlabel('Time (seg)')
-#plt.ylabel('Pitch Angle (deg)')
+# Save data
+print "Save data."
 
 sio.savemat('x.mat', {'x': x})
 sio.savemat('v.mat', {'v': v})
+sio.savemat('time.mat', {'time_': time_})
+
+# Plot Pitch angle
+print "Plot pitch angle"
+plt.close('all')
+plt.ioff()
+
+plt.figure(1)
+plt.subplot(211)
+plt.plot(time_, x, 'b')
+plt.xlabel('Time (seg)')
+plt.ylabel('Pitch Angle (deg)')
+
+plt.subplot(212)
+plt.plot(time_, v, 'r')
+plt.xlabel('Time (seg)')
+plt.ylabel('Pitch Velocity (deg/s)')
+
+plt.show()
+
+print "Bye bye!"
