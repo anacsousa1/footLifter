@@ -26,7 +26,7 @@ import scipy.io as sio
 # ##############################################################################
 # Ports and addresses
 portIMU = 'COM4'        # in windows, verify "Manage Devices"
-addressIMU = 1          # the device must have a stick informing it
+addressIMU = 0          # the device must have a stick informing it
 
 # Open ports
 print '\tWe are trying to connect to the IMU (address ' + str(addressIMU) + ') to port ' + portIMU + '.'
