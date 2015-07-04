@@ -1,10 +1,14 @@
 close all; clear; clc;
 
-load('v');
-load('x');
+load('v2');
+load('x2');
+load('stim_times');
 
 figure;
 hold on;
-plot(v/norm(v),'r');
-plot(x/norm(x));
+%plot(v,'r');
+plot(x);
+
+%plot(stim_times, ones(length(stim_times)),'r*');
+
 hold off;

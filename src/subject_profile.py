@@ -5,7 +5,7 @@
 # ## Python interpreter: Anaconda 2.2.0 (python 2.7)
 # ## Author: Ana Carolina Cardoso de Sousa
 # ## Email: anacsousa1@gmail.com
-# ## Created: Jul 1st 2015
+# ## Created: Jul 2st 2015
 # ######################################################################################################################
 
 
@@ -31,7 +31,7 @@ def cristina():
 def claudir():
     print "User: Claudir"
     current = [8]
-    pulse_width = [400]
+    pulse_width = [350]
     return current, pulse_width
 def antonio():
     print "User: Antonio"

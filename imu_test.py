@@ -13,7 +13,6 @@ __authors__ = [
     "\"Ana de Sousa\" <anacsousa1@gmail.com>",
 ]
 
-
 # Importing...
 import time
 import math
